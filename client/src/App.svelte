@@ -1,10 +1,12 @@
 <script>
-	import './styles.css';
+    import './styles.css';
+	import { onMount, afterUpdate } from 'svelte';
 
     let showSidebar = false;
 
     let message = ""; // User input
     let messages = []; // All messages in the chat
+    let chatBox; // Chatting scroll area
 
     // Simulated AI response function
     function getAiResponse(userMessage) {
@@ -15,17 +17,32 @@
     function sendMessage() {
         if (message.trim() !== "") {
             // Add the user message
-            messages = [...messages, { text: message, sender: "user" }]
+            messages = [...messages, { text: message, sender: "user" }];
             // Clear the input field
             message = "";
 
             // Simulate AI response after a short delay
-			messages.push({
-				text: getAiResponse(messages[messages.length - 1].text),
-				sender: "ai",
-			});
+            messages = [
+                ...messages,
+                {
+                    text: getAiResponse(messages[messages.length - 1].text),
+                    sender: "ai",
+                },
+            ];
         }
     }
+
+    // This function ensures that the chat container is always scrolled to the bottom
+    function updateScrollArea() {
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    // Use the afterUpdate lifecycle hook to ensure the scroll happens after message is added
+    afterUpdate(() => {
+        updateScrollArea();
+    });
 
     // Handle Enter key to send message
     function handleKeydown(event) {
@@ -37,7 +54,7 @@
 
 <main>
     <div class="faqContainer">
-        <button class = "menuBtn" on:click={() => (showSidebar = !showSidebar)}>
+        <button class="menuBtn" on:click={() => (showSidebar = !showSidebar)}>
             {#if showSidebar}
                 <img src="./images/chevronLeft.png" alt="x" class="icon" />
             {:else}
@@ -46,18 +63,28 @@
         </button>
         {#if showSidebar}
             <div class="faqContent">
-                <button class = "faqBtn">mfw i am content0</button>
-                <button class = "faqBtn">mfw i am content1asdfasdfasdfasdfasdfasdfasdfasdfasdfasd</button>
-				<button class = "faqBtn">mfw i am content2</button>
-				<button class = "faqBtn">mfw i am content3</button>
-				<button class = "faqBtn">mfw i am content4</button>
+                <button class="faqBtn" id="b0" on:click={() => (message = "sample faq content 0")}>
+                    mfw i am content0
+                </button>
+                <button class="faqBtn" id="b1" on:click={() => (message = "sample faq content 1")}>
+                    mfw i am content1
+                </button>
+                <button class="faqBtn" id="b2" on:click={() => (message = "sample faq content 2")}>
+                    mfw i am content2
+                </button>
+                <button class="faqBtn" id="b3" on:click={() => (message = "sample faq content 3")}>
+                    mfw i am content3
+                </button>
+                <button class="faqBtn" id="b4" on:click={() => (message = "sample faq content 4")}>
+                    mfw i am content4
+                </button>
             </div>
         {/if}
     </div>
 
     <div class="chat-container">
         <!-- Chat Messages -->
-        <div class="chat-box">
+        <div class="chat-box" bind:this={chatBox}>
             {#each messages as { text, sender }}
                 <div class="message {sender}">
                     <div class="bubble">{text}</div>
