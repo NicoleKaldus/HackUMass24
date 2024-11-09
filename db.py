@@ -10,6 +10,7 @@ load_dotenv()
 # Access credentials
 username = os.getenv("MONGODB_USERNAME")
 password = os.getenv("MONGODB_PASSWORD")
+print(username, password)
 
 
 uri = f"mongodb+srv://{username}:{password}@cluster0.lpgru.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -28,11 +29,12 @@ except Exception as e:
 db = client['hackathon_db']
 collection = db['goose_data']
 
-with open('output.json', 'r') as file:
+
+""" with open('output.json', 'r') as file:
     scraped_data = json.load(file)
 
 collection.insert_many(scraped_data)
-print("Data inserted successfully")
+print("Data inserted successfully") """
 
 """ scraped_data = {
     "title": "Example Article Title",
