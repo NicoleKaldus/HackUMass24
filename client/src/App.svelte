@@ -3,7 +3,7 @@
 	export let name;
 	let rand = -1;
 	function getRand() {
-		fetch("./rand")
+		fetch("/rand")
 		.then(d => d.text())
 		.then(d => (rand = d));
 	}
