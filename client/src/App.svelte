@@ -37,13 +37,8 @@
 </script>
 
 <main>
-    <h1>Hello {name}!</h1>
-    <p>
-        See <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">next steps</a> to view our future plans.
-    </p>
-
     <div class="flex-container">
-        <button on:click={() => (showSidebar = !showSidebar)}>
+        <button class = "menuBtn" on:click={() => (showSidebar = !showSidebar)}>
             {#if showSidebar}
                 <img src="./images/chevronLeft.png" alt="x" class="icon" />
             {:else}
@@ -51,16 +46,14 @@
             {/if}
         </button>
         {#if showSidebar}
-            <div class="qqContent">
-                <p>mfw i am content0</p>
-                <p>mfw i am content1</p>
-                <p>mfw i am content2</p>
-                <p>mfw i am content3</p>
-                <p>mfw i am content4</p>
-                <p>mfw i am content5</p>
-                <p>mfw i am content6</p>
-                <p>mfw i am content7</p>
-                <p>mfw i am content8</p>
+            <div class="faqContent">
+                <button class = "faqBtn">mfw i am content0</button>
+                <button class = "faqBtn">mfw i am content1</button>
+				<button class = "faqBtn">mfw i am content2</button>
+				<button class = "faqBtn">mfw i am content3</button>
+				<button class = "faqBtn">mfw i am content4</button>
+				<button class = "faqBtn">mfw i am content5</button>
+				<button class = "faqBtn">mfw i am content6</button>
             </div>
         {/if}
     </div>
@@ -83,7 +76,7 @@
                 placeholder="Type a message..."
                 on:keydown={handleKeydown}
             />
-            <button on:click={sendMessage}>Send</button>
+            <button class="inputBtn" on:click={sendMessage}>Send</button>
         </div>
     </div>
 </main>
@@ -98,7 +91,8 @@
 
     .flex-container {
         position: absolute;
-        top: 15%;
+        top: 0;
+		left: 0;
         background: greenyellow;
         color: white;
         width: fit-content;
@@ -106,40 +100,45 @@
         padding: 3px;
     }
 
-    .qqContent {
+    .faqContent {
         position: relative;
         left: 0;
-        background: blue;
+        background: rgb(0, 238, 255);
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
         align-items: center;
         margin: auto;
-        height: 100%;
+		width: 15vw;
+        height: 100vh;
         column-gap: 1px;
     }
 
-    p {
-        margin: 0.5em;
-    }
-
-    button {
-        position: relative;
-        float: right;
-        background-color: green;
-    }
+	.menuBtn {
+		position: relative;
+		float: right;
+		background-color: green;
+	}
 
     .icon {
         width: 1em;
         height: 1em;
     }
 
-    h1 {
-        color: blue;
-        text-transform: uppercase;
-        font-size: 4em;
-        font-weight: 100;
-    }
+	.faqBtn {
+		margin: 0.5em;
+		color: black;
+		border: none;
+		outline: none;
+	}
+
+	.faqBtn:hover{
+		color: gray;
+	}
+
+	.faqBtn:active{
+		color: black;
+	}
 
     @media (min-width: 640px) {
         main {
@@ -217,7 +216,7 @@
         font-size: 14px;
     }
 
-    button {
+    .inputBtn {
         padding: 10px 20px;
         border-radius: 25px;
         border: none;
@@ -226,7 +225,7 @@
         cursor: pointer;
     }
 
-    button:hover {
+    .inputBtn:hover {
         background-color: #0056b3;
     }
 </style>
