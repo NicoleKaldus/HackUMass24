@@ -7,6 +7,7 @@
     let message = ""; // User input
     let messages = []; // All messages in the chat
     let chatBox; // Chatting scroll area
+	let input; // User input text area
 
     // Simulated AI response function
     function getAiResponse(userMessage) {
@@ -29,6 +30,8 @@
                     sender: "ai",
                 },
             ];
+
+			input.focus();
         }
     }
 
@@ -63,6 +66,7 @@
         </button>
         {#if showSidebar}
             <div class="faqContent">
+				<p>FAQ</p>
                 <button class="faqBtn" id="b0" on:click={() => (message = "sample faq content 0")}>
                     mfw i am content0
                 </button>
@@ -94,7 +98,7 @@
 
         <!-- Input Box and Send Button -->
         <div class="input-container">
-            <input
+            <input bind:this={input}
                 type="text"
                 bind:value={message}
                 placeholder="Type a message..."
