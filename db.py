@@ -2,6 +2,7 @@ import os
 from pymongo.mongo_client import MongoClient
 from dotenv import load_dotenv
 from pymongo import MongoClient
+import json
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,12 +23,18 @@ try:
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
-    
+
 
 db = client['hackathon_db']
-collection = db['reddit_data']
+collection = db['goose_data']
 
-scraped_data = {
+with open('output.json', 'r') as file:
+    scraped_data = json.load(file)
+
+collection.insert_many(scraped_data)
+print("Data inserted successfully")
+
+""" scraped_data = {
     "title": "Example Article Title",
     "content": "Full text of the article goes here...",
     "source": "https://example.com/article-url",
@@ -37,7 +44,7 @@ scraped_data = {
     }
 }
 
-collection.insert_one(scraped_data)
+collection.insert_one(scraped_data) """
 
 # Query data (e.g., retrieve all records)
 documents = collection.find()
