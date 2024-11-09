@@ -1,16 +1,7 @@
 <script>
 	let showSidebar = false;
 	export let name;
-	let rand = -1;
-	function getRand() {
-		fetch("/rand")
-		.then(d => d.text())
-		.then(d => (rand = d));
-	}
 </script>
-  
-  <h1>Your number is {rand}!</h1>
-  <button on:click={getRand}>Get a random number</button>
 
 <main>
 	<h1>Hello {name}!</h1>
@@ -19,11 +10,15 @@
 
 <div class="flex-container">
 	<button on:click={() => (showSidebar = !showSidebar)}>
-		<img src="./images/xButton.png" alt="x" class="icon" />
+		{#if showSidebar}
+			<img src="./images/chevronLeft.png" alt="x" class="icon" />
+		{:else}
+			<img src="./images/chevronRight.png" alt="x" class="icon" />
+		{/if}
 	</button>
 	{#if showSidebar}
 		<div class="qqContent">
-			<p>mfw i am content</p>
+			<p>mfw i am content0</p>
 			<p>mfw i am content1</p>
 			<p>mfw i am content2</p>
 			<p>mfw i am content3</p>
@@ -49,7 +44,9 @@
 		top: 15%;
 		background: greenyellow;
 		color: white;
-		width: 20%;
+		width: fit-content;
+		height: fit-content;
+		padding: 3px;
 	}
 
 	.qqContent {
@@ -70,17 +67,18 @@
 	}
 
 	button {
-		right: 0;
-		background-color: red;
+		position: relative;
+		float: right;
+		background-color: green;
 	}
 
 	.icon {
-		width: 10px;
-		height: 10px;
+		width: 1em;
+		height: 1em;
 	}
 
 	h1 {
-		color: #ff3e00;
+		color: blue;
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
