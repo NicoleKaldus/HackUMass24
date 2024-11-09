@@ -1,6 +1,5 @@
 <script>
     let showSidebar = false;
-    export let name;
 
     let message = ""; // User input
     let messages = []; // All messages in the chat
@@ -37,7 +36,7 @@
 </script>
 
 <main>
-    <div class="flex-container">
+    <div class="faqContainer">
         <button class = "menuBtn" on:click={() => (showSidebar = !showSidebar)}>
             {#if showSidebar}
                 <img src="./images/chevronLeft.png" alt="x" class="icon" />
@@ -48,12 +47,10 @@
         {#if showSidebar}
             <div class="faqContent">
                 <button class = "faqBtn">mfw i am content0</button>
-                <button class = "faqBtn">mfw i am content1</button>
+                <button class = "faqBtn">mfw i am content1asdfasdfasdfasdfasdfasdfasdfasdfasdfasd</button>
 				<button class = "faqBtn">mfw i am content2</button>
 				<button class = "faqBtn">mfw i am content3</button>
 				<button class = "faqBtn">mfw i am content4</button>
-				<button class = "faqBtn">mfw i am content5</button>
-				<button class = "faqBtn">mfw i am content6</button>
             </div>
         {/if}
     </div>
@@ -89,8 +86,8 @@
         margin: 0 auto;
     }
 
-    .flex-container {
-        position: absolute;
+    .faqContainer {
+        position: fixed;
         top: 0;
 		left: 0;
         background: greenyellow;
@@ -106,7 +103,6 @@
         background: rgb(0, 238, 255);
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
         align-items: center;
         margin: auto;
 		width: 15vw;
@@ -126,10 +122,13 @@
     }
 
 	.faqBtn {
-		margin: 0.5em;
+		width: 100%;
 		color: black;
 		border: none;
+		margin: none;
 		outline: none;
+		overflow:hidden;
+		text-overflow: ellipsis;
 	}
 
 	.faqBtn:hover{
@@ -151,7 +150,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        height: 100vh;
+        height: 90vh;
         max-width: 60vw;
         margin: 0 auto;
         border: 1px solid #ddd;
