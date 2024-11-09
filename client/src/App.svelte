@@ -1,4 +1,6 @@
 <script>
+	import './styles.css';
+
     let showSidebar = false;
 
     let message = ""; // User input
@@ -13,17 +15,15 @@
     function sendMessage() {
         if (message.trim() !== "") {
             // Add the user message
-            messages.push({ text: message, sender: "user" });
+            messages = [...messages, { text: message, sender: "user" }]
             // Clear the input field
             message = "";
 
             // Simulate AI response after a short delay
-            setTimeout(() => {
-                messages.push({
-                    text: getAiResponse(messages[messages.length - 1].text),
-                    sender: "ai",
-                });
-            }, 1000); // AI responds after 1 second
+			messages.push({
+				text: getAiResponse(messages[messages.length - 1].text),
+				sender: "ai",
+			});
         }
     }
 
@@ -78,153 +78,6 @@
     </div>
 </main>
 
-<style>
-    main {
-        text-align: center;
-        padding: 1em;
-        max-width: 240px;
-        margin: 0 auto;
-    }
-
-    .faqContainer {
-        position: fixed;
-        top: 0;
-		left: 0;
-        background: greenyellow;
-        color: white;
-        width: fit-content;
-        height: fit-content;
-        padding: 3px;
-    }
-
-    .faqContent {
-        position: relative;
-        left: 0;
-        background: rgb(0, 238, 255);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: auto;
-		width: 15vw;
-        height: 100vh;
-        column-gap: 1px;
-    }
-
-	.menuBtn {
-		position: relative;
-		float: right;
-		background-color: green;
-	}
-
-    .icon {
-        width: 1em;
-        height: 1em;
-    }
-
-	.faqBtn {
-		width: 100%;
-		color: black;
-		border: none;
-		margin: none;
-		outline: none;
-		overflow:hidden;
-		text-overflow: ellipsis;
-	}
-
-	.faqBtn:hover{
-		color: gray;
-	}
-
-	.faqBtn:active{
-		color: black;
-	}
-
-    @media (min-width: 640px) {
-        main {
-            max-width: none;
-        }
-    }
-
-    /* Chat Container */
-    .chat-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        height: 90vh;
-        max-width: 60vw;
-        margin: 0 auto;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 10px;
-    }
-
-    /* Chat Messages Box */
-    .chat-box {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        overflow-y: auto;
-        max-height: calc(100vh - 160px); /* Adjust height to leave space for input */
-        padding: 10px;
-    }
-
-    .message {
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-start;
-        max-width: 70%;
-    }
-
-    .message.ai {
-        justify-content: flex-end;
-    }
-
-    /* Message Bubble Styles */
-    .bubble {
-        max-width: 80%;
-        padding: 10px;
-        border-radius: 10px;
-        background-color: #f1f1f1;
-        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .message.user .bubble {
-        background-color: #007bff;
-        color: white;
-        align-self: flex-start;
-    }
-
-    .message.ai .bubble {
-        background-color: #f8f8f8;
-        color: #333;
-        align-self: flex-end;
-    }
-
-    /* Input Box and Send Button */
-    .input-container {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 25px;
-        border: 1px solid #ddd;
-        font-size: 14px;
-    }
-
-    .inputBtn {
-        padding: 10px 20px;
-        border-radius: 25px;
-        border: none;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-    }
-
-    .inputBtn:hover {
-        background-color: #0056b3;
-    }
-</style>
+<!-- <style>
+	@import './styles.css';
+</style> -->
