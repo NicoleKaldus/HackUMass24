@@ -1,17 +1,18 @@
 <script>
     import "./styles.css";
     import { onMount, afterUpdate } from "svelte";
+    import { marked } from "marked";
 
     let showSidebar = false;
 
     let bot = "sam";
     let message = ""; // User input
-    let messages = []; // All messages in the chat
     const prompt = {
-        user: "system",
+        role: "system",
         content:
-            "You are a helpful assistant for students at the University of Massachusetts Amherst.",
+            "You are a helpful assistant for students at the University of Massachusetts Amherst, also known as UMass Amherst. Please format your response to have reasonable line breaks to separate ideas.",
     };
+    let messages = [prompt]; // All messages in the chat, init with prompt
     let chatBox; // Chatting scroll area
     let input; // User input text area
 
@@ -24,16 +25,21 @@
      * - "/init": takes in query
      * - "/query": takes in query and chat history (user and ai)
      * @param query user text input
-     * @returns [data.chat_history, data.response]
+     * @returns data.content
      */
     async function getAiResponse(query) {
         const routes = ["/init", "/query"];
         const payload = { input: query };
-        // account for user msg being first element
-        const isFirstQuery = messages.length < 2;
-        // add chat history to following queries
-        if (!isFirstQuery) payload.history = messages;
+        // account for prompt and user msg
+        const isFirstQuery = messages.length < 3;
         const route = isFirstQuery ? routes[0] : routes[1];
+        if (isFirstQuery) {
+            // initial ai prompt
+            payload.prompt = prompt.content;
+        } else {
+            // add chat history to following queries
+            payload.history = messages;
+        }
         // console.log(isFirstQuery, query, route);
         // console.log(payload);
         console.log(1, messages);
@@ -54,11 +60,11 @@
             .then(data => {
                 // return ai response
                 console.log(2, messages);
-                return [data.chat_history, data.content];
+                return data.content;
             })
             .catch(e => {
                 console.error(e);
-                return [data.chat_history, "Failed to get AI response"];
+                return "Failed to get AI response";
             });
     }
 
@@ -67,11 +73,18 @@
         // dont send empty input
         if (message.trim() !== "") {
             // Add the user message
-            messages = [...messages, { role: "user", content: message }];
+            messages = [
+                ...messages,
+                { role: "user", content: marked(message.replace(/\n/g, "<br>")) },
+            ];
             // Simulate AI response after a short delay
             console.log(3, messages);
-            const [new_history, response] = await getAiResponse(message);
-            messages = new_history;
+            const response = await getAiResponse(message);
+            messages = [
+                ...messages,
+                { role: "assistant", content: marked(response.replace(/\n/g, "<br>")) },
+            ];
+            // messages = new_history;
             // messages.push(response);
             console.log(4, messages);
             // Clear the input field
@@ -138,7 +151,7 @@
             {#each messages as { content, role }}
                 {#if role !== "system"}
                     <div class="message {role}">
-                        <div class="bubble">{content}</div>
+                        <div class="bubble">{@html content}</div>
                     </div>
                 {/if}
             {/each}
