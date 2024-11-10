@@ -1,6 +1,6 @@
 <script>
     import "./styles.css";
-    import { onMount, afterUpdate } from "svelte";
+    import { onMount, afterUpdate, tick } from "svelte";
     import { marked } from "marked";
 
     let chatBox; // Chatting scroll area
@@ -97,15 +97,14 @@
 
     // Send message when Enter is pressed or button is clicked
     async function sendMessage() {
+        loading = true;
         // dont send empty input
         if (message.trim() !== "") {
             // Add the user message
             messages = [...messages, { role: "user", content: message }];
             // Simulate AI response after a short delay
             console.log(3, messages);
-            loading = true;
             const response = await getAiResponse(message);
-            loading = false;
             messages = [
                 ...messages,
                 { role: "assistant", content: marked(response.replace(/\n/g, "<br>")) },
@@ -116,7 +115,9 @@
             // Clear the input field
             message = "";
         }
-        input.focus();
+        loading = false;
+        // wait till input is reenabled to refocus
+        tick().then(() => input.focus());
     }
 
     // This function ensures that the chat container is always scrolled to the bottom
@@ -142,10 +143,12 @@
     function toggleTitle() {
         if (isSam) {
             this.style.color = "gray";
-            placeholder = "Honk! I'm goose! I'm up to date with the community gossip about UMass Amherst!";
+            placeholder =
+                "Honk! I'm goose! I'm up to date with the community gossip about UMass Amherst!";
         } else {
             this.style.color = "rgb(136, 28, 28)";
-            placeholder = "I'm Sam! I can tell you anything about UMass Amherst from official sources!";
+            placeholder =
+                "I'm Sam! I can tell you anything about UMass Amherst from official sources!";
         }
         isSam = !isSam;
         messages = [sam_prompt, { role: "assistant", content: placeholder }];
@@ -220,8 +223,9 @@
                 bind:value={message}
                 placeholder="Type a message..."
                 on:keydown={handleKeydown}
+                disabled={loading}
             />
-            <button class="inputBtn" on:click={sendMessage}>Send</button>
+            <button class="inputBtn" on:click={sendMessage} disabled={loading}>Send</button>
         </div>
     </div>
 
