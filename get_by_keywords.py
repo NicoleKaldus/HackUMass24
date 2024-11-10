@@ -26,14 +26,16 @@ db = client["hackathon_db"]
 
 
 def ask_goose_by_keywords(keywords):
+    # print(keywords)
     # keywords is a list of keywords that are relevant to the query
     collection = db["goose_data"]
     if (
         "text_text" not in collection.list_indexes()
     ):  # 'text_text' is the default name for a text index on the 'text' field
         collection.create_index([("text", "text")])
-    for i in collection.list_indexes():
-        print(i)
+    # for i in collection.list_indexes():
+        # print(i)
+    #     pass
     # Perform a text search to find documents containing the keyword in the "content" field
     ret = {}
     appended_posts = (
@@ -51,7 +53,7 @@ def ask_goose_by_keywords(keywords):
                 appended_posts.add(content["_id"])
             count += 1
 
-        print(count, " documents found for keyword ", k)
+        # print(count, " documents found for keyword ", k)
 
     return ret
 
@@ -63,8 +65,8 @@ def ask_sam_by_keywords(keywords):
         "content_text" not in collection.list_indexes()
     ):  # 'text_text' is the default name for a text index on the 'text' field
         collection.create_index([("content", "text")])
-    for i in collection.list_indexes():
-        print(i)
+    # for i in collection.list_indexes():
+    #     print(i)
     # Perform a text search to find documents containing the keyword in the "content" field
     ret = {}
     appended_posts = (
@@ -82,13 +84,13 @@ def ask_sam_by_keywords(keywords):
                 appended_posts.add(content["_id"])
             count += 1
 
-        print(count, " documents found for keyword ", k)
+        # print(count, " documents found for keyword ", k)
 
     return ret
 
 
-if __name__ == "__main__":
-    goose_posts = ask_goose_by_keywords(["painting", "campus"])
-    print(goose_posts)
-    sam_posts = ask_sam_by_keywords(["important", "dorm"])
-    print(sam_posts)
+# if __name__ == "__main__":
+    # goose_posts = ask_goose_by_keywords(["painting", "campus"])
+    # print(goose_posts)
+    # sam_posts = ask_sam_by_keywords(["important", "dorm"])
+    # print(sam_posts)

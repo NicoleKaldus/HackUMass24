@@ -68,8 +68,8 @@ def construct_chat_object(system_message, user_message, chat_history=None):
         A chat object for the OpenAI API of the form [{"role": role, "content": content}, ...]
     """
     messages = []
-    print("OAEFHAEIUFHOAEIUFheioaufh")
-    print(system_message, user_message, chat_history, sep="\n")
+    # print("OAEFHAEIUFHOAEIUFheioaufh")
+    # print(system_message, user_message, chat_history, sep="\n")
 
     if isinstance(user_message, str) is False:
         raise ValueError("The user message must be a string")
@@ -107,7 +107,7 @@ def construct_tool_response_chat_object(tool_call_id, response, chat_history):
         A list of message objects for the OpenAI API of the form [{"role": role, "content": content}, ...]
 
     """
-    print("\n\n\n\n", response, "\n\n\n")
+    # print("\n\n\n\n", response, "\n\n\n")
     exit()
     tool_response_object = {
         "role": "tool",
@@ -142,12 +142,14 @@ def attempt_tool_calls(completion, max_attempts, chat_history):
         and attempts < max_attempts
         and completion.choices[0].message.tool_calls is not None
     ):
+        print(attempts)
         # print("completion", completion.choices[0].message)
         tool_call = completion.choices[0].message.tool_calls[0]  # get the tool call
         function_name = tool_call.function.name  # get the name of the function to call
         parameters = (
             tool_call.function.arguments
         )  # get the parameters to pass to the function
+        parameters = json.loads(parameters)
         result = handle_function_calls(function_name, parameters)  # call the function
         chat_history.append(
             completion.choices[0].message
@@ -156,12 +158,12 @@ def attempt_tool_calls(completion, max_attempts, chat_history):
         new_message_list = construct_tool_response_chat_object(
             tool_call.id, result, chat_history
         )  # construct the message object for the tool response
-        # print("new_message_list", new_message_list)
+        print("new_message_list", new_message_list)
         completion = client.chat.completions.create(
             model="gpt-4o-mini", messages=new_message_list
         )
         attempts += 1
-
+    print(completion)
     return completion, chat_history
 
 
@@ -249,14 +251,28 @@ def handle_function_calls(function_name, parameters):
         { "response": response, ... }
         Ex. { "location": "New York, NY", "temperature": "72°F" }
     """
+    # print(parameters)
+    # print(parameters["keywords"])
+    # print(parameters.keywords)
     match function_name:
         case "example_function":
             return {"function_result": example_function()}
         # Add more cases here for other functions
         case "ask_goose_by_keywords":
-            return get_by_keywords.ask_goose_by_keywords(parameters)
+            key_post_pairs = get_by_keywords.ask_goose_by_keywords(parameters["keywords"])
+            for key in key_post_pairs:
+                for post in key_post_pairs[key]:
+                    if "_id" in post:
+                        del post["_id"]
+            # print(*key_post_pairs.items(), sep="\n")
+            return key_post_pairs
         case "ask_sam_by_keywords":
-            return get_by_keywords.ask_sam_by_keywords(parameters)
+            key_post_pairs = get_by_keywords.ask_sam_by_keywords(parameters["keywords"])
+            for key in key_post_pairs:
+                for post in key_post_pairs[key]:
+                    if "_id" in post:
+                        del post["_id"]
+            return key_post_pairs
         case _:
             raise ValueError(f"Function {function_name} not recognized")
     return None
