@@ -3,18 +3,33 @@
     import { onMount, afterUpdate } from "svelte";
     import { marked } from "marked";
 
-    let showSidebar = false;
-
-    let bot = "sam";
+    let showSidebar = true;
+    let showInfo = true;
+    let isSam = true;
     let message = ""; // User input
     const prompt = {
         role: "system",
         content:
             "You are a helpful assistant for students at the University of Massachusetts Amherst, also known as UMass Amherst. Please format your response to have reasonable line breaks to separate ideas.",
     };
+    let placeholder = "I'm Sam! I can tell you anything from official sources!";
     let messages = [prompt]; // All messages in the chat, init with prompt
     let chatBox; // Chatting scroll area
     let input; // User input text area
+
+    messages = [...messages, { content: placeholder, role: "assistant" }];
+
+    // FAQ array with key-value pairs
+    const faqItems = [
+        { title: "Majors & Minors", content: "What are the requirements for a BS in Computer Science?" },
+        { title: "Gen-Ed Requirements", content: "What are the gen-ed requirements to graduate?" },
+        { title: "Residential Areas", content: "What are the pros and cons of living at Northeast?" },
+        { title: "Residential Halls", content: "What is the atmosphere like at Mary Lyon Hall?" },
+        { title: "Dining Halls", content: "At what times do the dining halls close?" },
+        { title: "Transportation", content: "How can I get to CVS without a car?" },
+        { title: "Clubs", content: "How can I join the cybersecurity club?" },
+        { title: "Activities", content: "What can I do for fun around Amherst?" }
+    ];
 
     /**
      * Gets AI response to user query in form:
@@ -60,7 +75,13 @@
             .then(data => {
                 // return ai response
                 console.log(2, messages);
-                return data.content;
+                let msg = data.content;
+                if(!isSam){
+                    if(Math.floor(Math.random() * 10) < 4){
+                        msg += " Honk!";
+                    }
+                }
+                return msg;
             })
             .catch(e => {
                 console.error(e);
@@ -92,6 +113,7 @@
 
             input.focus();
         }
+        input.focus();
     }
 
     // This function ensures that the chat container is always scrolled to the bottom
@@ -112,9 +134,26 @@
             sendMessage();
         }
     }
+
+    // Toggle the title between "Sam.ai" and "Goose.ai"
+    function toggleTitle() {
+        messages = [];
+        if(isSam){
+            this.style.color = "gray";
+            placeholder = "Honk! I'm goose! I'm up to date with the community gossip!";
+        }
+        else{
+            this.style.color = "rgb(136, 28, 28)";
+            placeholder = "I'm Sam! I can tell you anything from official sources!";
+        }
+        isSam = !isSam;
+        messages = [...messages, { text: placeholder, sender: "ai" }];
+    }
 </script>
 
 <main>
+    <button class="titleBtn" on:click={toggleTitle}>{isSam ? "Sam.ai" : "Goose.ai"}</button>
+
     <div class="faqContainer">
         <button class="menuBtn" on:click={() => (showSidebar = !showSidebar)}>
             {#if showSidebar}
@@ -123,41 +162,39 @@
                 <img src="./images/chevronRight.png" alt="x" class="icon" />
             {/if}
         </button>
+
         {#if showSidebar}
             <div class="faqContent">
-                <p>FAQ</p>
-                <button class="faqBtn" id="b0" on:click={() => (message = "sample faq content 0")}>
-                    mfw i am content0
-                </button>
-                <button class="faqBtn" id="b1" on:click={() => (message = "sample faq content 1")}>
-                    mfw i am content1
-                </button>
-                <button class="faqBtn" id="b2" on:click={() => (message = "sample faq content 2")}>
-                    mfw i am content2
-                </button>
-                <button class="faqBtn" id="b3" on:click={() => (message = "sample faq content 3")}>
-                    mfw i am content3
-                </button>
-                <button class="faqBtn" id="b4" on:click={() => (message = "sample faq content 4")}>
-                    mfw i am content4
-                </button>
+                <div class="faqHeader">
+                    <p>FAQ</p>
+                </div>
+                {#each faqItems as { title, content }}
+                    <button
+                        class="faqBtn"
+                        on:click={() => (message = content)}
+                    >
+                        {title}
+                    </button>
+                {/each}
             </div>
         {/if}
     </div>
 
     <div class="chat-container">
-        <!-- Chat Messages -->
         <div class="chat-box" bind:this={chatBox}>
             {#each messages as { content, role }}
                 {#if role !== "system"}
                     <div class="message {role}">
-                        <div class="bubble">{@html content}</div>
+                        <div class="bubble" 
+                         style="background-color: {role === 'assistant' ? (isSam ? 'rgba(136, 28, 28, 0.747)' : 'rgb(211, 211, 211)') : ''}; 
+                                color: {role === 'assistant' ? (isSam ? 'rgb(211, 211, 211)' : 'black') : ''};">
+                         {@html content}
+                    </div> 
                     </div>
                 {/if}
             {/each}
         </div>
 
-        <!-- Input Box and Send Button -->
         <div class="input-container">
             <input
                 bind:this={input}
@@ -169,7 +206,34 @@
             <button class="inputBtn" on:click={sendMessage}>Send</button>
         </div>
     </div>
+
+    <div class="desc-container">
+        <div class = "account-container">
+            <button class="loginBtn">Log in</button>
+            <button class="signupBtn">Sign up</button>
+        </div>
+        {#if showInfo}
+            <div class="info bottom">
+                <div>
+                    <h3>Sam</h3>
+                    <p class="infoinfo">will tell you what's on official sources.</p>
+                </div>
+                <div>
+                    <h3>Goose</h3>
+                    <p class="infoinfo">will tell you what the community says.</p>
+                </div>
+                <div>
+                    <p class="infoinfo">Click the title to switch your conversation partner!</p>
+                </div>
+            </div>
+        {/if}
+        <button class="infoBtn" on:click={() => (showInfo = !showInfo)}>
+            <img src="./images/info.png" alt="info" class="icon" />
+        </button>
+    </div>
 </main>
+
+
 
 <!-- <style>
 	@import './styles.css';
