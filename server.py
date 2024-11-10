@@ -17,13 +17,19 @@ def base():
 def home(path):
     return send_from_directory("client/public", path)
 
-# 
-tools = []
+
+sam_tools = []
+goose_tools = []
+with open("sam_tools.json") as f:
+    # t is a json containing an array of tools
+    # each tool is a json object with a function
+    t = json.load(f)
+    sam_tools = t["tools"]
 with open("goose_tools.json") as f:
     # t is a json containing an array of tools
     # each tool is a json object with a function
     t = json.load(f)
-    tools = t["tools"]
+    goose_tools = t["tools"]
 
 
 # init openai chatgpt-4o-mini
@@ -32,11 +38,9 @@ def init_chatgpt():
     data = request.get_json()
     system_message = data.get("prompt", "")
     user_message = data.get("input", "")
-    # print(data, user_message)
-    # TODO (for backend): populate with functions, see chatbot.py
-    # tools = None
+    is_sam = data.get("isSam", False)
+    tools = sam_tools if is_sam else goose_tools
     res = chatbot.start_chat(system_message, user_message, tools)
-    # can't JSON serialize this, so recreate it manually
     return jsonify_chatbot_msg(res)
 
 
@@ -46,25 +50,19 @@ def query():
     data = request.get_json()
     user_message = data.get("input", "")
     chat_history = data.get("history", [])
-    # TODO (for backend): populate with functions, see chatbot.py
-    # tools = None
+    is_sam = data.get("isSam", False)
+    tools = sam_tools if is_sam else goose_tools
     res = chatbot.continue_chat(user_message, chat_history, tools, False)
     return jsonify_chatbot_msg(res)
 
 
 def jsonify_chatbot_msg(message):
-    # print(message, "\n")
-    # can't JSON serialize this, so recreate it manually
+    # can't JSON serialize ChatCompletionMessage, so recreate it manually
     response, history = message[0], message[1]
-    # print(history, "\n")
     response = {
         "role": response.role,
         "content": response.content,
     }
-    # replace ChatCompletionMessage with JSONifiable one
-    history[-1] = response
-    # print(response, "\n")
-    # print(history, "\n")
     return jsonify(response)
 
 

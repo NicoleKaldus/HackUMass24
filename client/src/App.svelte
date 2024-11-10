@@ -3,32 +3,43 @@
     import { onMount, afterUpdate } from "svelte";
     import { marked } from "marked";
 
+    let chatBox; // Chatting scroll area
+    let input; // User input text area
     let showSidebar = true;
     let showInfo = true;
     let isSam = true;
     let message = ""; // User input
-    const prompt = {
+    const sam_prompt = {
         role: "system",
         content:
-            "You are a helpful assistant for students at the University of Massachusetts Amherst, also known as UMass Amherst. Please format your response to have reasonable line breaks to separate ideas.",
+            "You are Sam the Minuteman, the official mascot of the University of Massachusetts Amherst, also known as UMass Amherst. You are a helpful assistant for students and try to be as unbiased as possible when answering students.",
     };
-    let placeholder = "I'm Sam! I can tell you anything from official sources!";
-    let messages = [prompt]; // All messages in the chat, init with prompt
-    let chatBox; // Chatting scroll area
-    let input; // User input text area
-
-    messages = [...messages, { content: placeholder, role: "assistant" }];
+    const goose_prompt = {
+        role: "system",
+        content:
+            "You are a beloved goose with a strong, mischievous personality at the University of Massachusetts Amherst, also known as UMass Amherst. You are an assistant for students and you aren't afraid to show your bias towards water, fresh greens, and adventure.",
+    };
+    let placeholder = "I'm Sam! I can tell you anything about UMass Amherst from official sources!";
+    // All messages in the chat, init with prompt and welcome message
+    let messages = [sam_prompt, { role: "assistant", content: placeholder }];
+    let loading = false;
 
     // FAQ array with key-value pairs
     const faqItems = [
-        { title: "Majors & Minors", content: "What are the requirements for a BS in Computer Science?" },
+        {
+            title: "Majors & Minors",
+            content: "What are the requirements for a BS in Computer Science?",
+        },
         { title: "Gen-Ed Requirements", content: "What are the gen-ed requirements to graduate?" },
-        { title: "Residential Areas", content: "What are the pros and cons of living at Northeast?" },
+        {
+            title: "Residential Areas",
+            content: "What are the pros and cons of living at Northeast?",
+        },
         { title: "Residential Halls", content: "What is the atmosphere like at Mary Lyon Hall?" },
         { title: "Dining Halls", content: "At what times do the dining halls close?" },
         { title: "Transportation", content: "How can I get to CVS without a car?" },
         { title: "Clubs", content: "How can I join the cybersecurity club?" },
-        { title: "Activities", content: "What can I do for fun around Amherst?" }
+        { title: "Activities", content: "What can I do for fun around Amherst?" },
     ];
 
     /**
@@ -44,20 +55,17 @@
      */
     async function getAiResponse(query) {
         const routes = ["/init", "/query"];
-        const payload = { input: query };
-        // account for prompt and user msg
-        const isFirstQuery = messages.length < 3;
+        const payload = { input: query, isSam: isSam };
+        // account for prompt, welcome msg, and user msg
+        const isFirstQuery = messages.length < 4;
         const route = isFirstQuery ? routes[0] : routes[1];
         if (isFirstQuery) {
             // initial ai prompt
-            payload.prompt = prompt.content;
+            payload.prompt = isSam ? sam_prompt.content : goose_prompt.content;
         } else {
             // add chat history to following queries
             payload.history = messages;
         }
-        // console.log(isFirstQuery, query, route);
-        // console.log(payload);
-        console.log(1, messages);
 
         return fetch(route, {
             method: "POST",
@@ -67,17 +75,15 @@
             body: JSON.stringify(payload),
         })
             .then(res => {
-                // console.log("res:", res);
                 const resJson = res.json();
-                // console.log("res json:", resJson);
                 return resJson;
             })
             .then(data => {
                 // return ai response
                 console.log(2, messages);
                 let msg = data.content;
-                if(!isSam){
-                    if(Math.floor(Math.random() * 10) < 4){
+                if (!isSam) {
+                    if (Math.floor(Math.random() * 10) < 4) {
                         msg += " Honk!";
                     }
                 }
@@ -94,13 +100,12 @@
         // dont send empty input
         if (message.trim() !== "") {
             // Add the user message
-            messages = [
-                ...messages,
-                { role: "user", content: marked(message.replace(/\n/g, "<br>")) },
-            ];
+            messages = [...messages, { role: "user", content: message }];
             // Simulate AI response after a short delay
             console.log(3, messages);
+            loading = true;
             const response = await getAiResponse(message);
+            loading = false;
             messages = [
                 ...messages,
                 { role: "assistant", content: marked(response.replace(/\n/g, "<br>")) },
@@ -110,8 +115,6 @@
             console.log(4, messages);
             // Clear the input field
             message = "";
-
-            input.focus();
         }
         input.focus();
     }
@@ -137,17 +140,17 @@
 
     // Toggle the title between "Sam.ai" and "Goose.ai"
     function toggleTitle() {
-        messages = [];
-        if(isSam){
+        if (isSam) {
             this.style.color = "gray";
-            placeholder = "Honk! I'm goose! I'm up to date with the community gossip!";
-        }
-        else{
+            placeholder = "Honk! I'm goose! I'm up to date with the community gossip about UMass Amherst!";
+        } else {
             this.style.color = "rgb(136, 28, 28)";
-            placeholder = "I'm Sam! I can tell you anything from official sources!";
+            placeholder = "I'm Sam! I can tell you anything about UMass Amherst from official sources!";
         }
         isSam = !isSam;
-        messages = [...messages, { text: placeholder, sender: "ai" }];
+        messages = [sam_prompt, { role: "assistant", content: placeholder }];
+        messages[0] = isSam ? sam_prompt : goose_prompt;
+        console.log(messages);
     }
 </script>
 
@@ -169,10 +172,7 @@
                     <p>FAQ</p>
                 </div>
                 {#each faqItems as { title, content }}
-                    <button
-                        class="faqBtn"
-                        on:click={() => (message = content)}
-                    >
+                    <button class="faqBtn" on:click={() => (message = content)}>
                         {title}
                     </button>
                 {/each}
@@ -185,14 +185,32 @@
             {#each messages as { content, role }}
                 {#if role !== "system"}
                     <div class="message {role}">
-                        <div class="bubble" 
-                         style="background-color: {role === 'assistant' ? (isSam ? 'rgba(136, 28, 28, 0.747)' : 'rgb(211, 211, 211)') : ''}; 
-                                color: {role === 'assistant' ? (isSam ? 'rgb(211, 211, 211)' : 'black') : ''};">
-                         {@html content}
-                    </div> 
+                        <div
+                            class="bubble"
+                            style="background-color: {role === 'assistant'
+                                ? isSam
+                                    ? 'rgba(136, 28, 28, 0.747)'
+                                    : 'rgb(211, 211, 211)'
+                                : ''}; 
+                                color: {role === 'assistant'
+                                ? isSam
+                                    ? 'rgb(211, 211, 211)'
+                                    : 'black'
+                                : ''};"
+                        >
+                            {@html content}
+                        </div>
                     </div>
                 {/if}
             {/each}
+
+            {#if loading}
+                <div class="message assistant">
+                    <div class="bubble thinking">
+                        <span>Thinking...</span>
+                    </div>
+                </div>
+            {/if}
         </div>
 
         <div class="input-container">
@@ -208,7 +226,7 @@
     </div>
 
     <div class="desc-container">
-        <div class = "account-container">
+        <div class="account-container">
             <button class="loginBtn">Log in</button>
             <button class="signupBtn">Sign up</button>
         </div>
@@ -232,8 +250,6 @@
         </button>
     </div>
 </main>
-
-
 
 <!-- <style>
 	@import './styles.css';

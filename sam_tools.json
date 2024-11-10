@@ -1,11 +1,24 @@
 {
-    "type": "function",
-    "function": {
-        "name": "ask_sam_by_keywords",
-        "description": "This function takes in an array of keywords relevant to the user's query and searches our mongodb collections for scraped reddit posts that have those key words in the original poster's post. This function should be called when information about about UMass is needed, especially regarding official information.",
-        "parameters": {
-            "type": "array of strings",
-            "required": ["an array of strings representing the keywords of the query"]
+    "tools": [
+        {
+            "type": "function",
+            "function": {
+                "name": "ask_sam_by_keywords",
+                "description": "Searches a database for documents related to specific keywords. Use when user is asking for information about UMass Amherst",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "keywords": {
+                            "type": "array",
+                            "description": "A list of one-word keywords",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": ["keywords"]
+                }
+            }
         }
-    }
+    ]
 }
