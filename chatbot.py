@@ -107,11 +107,14 @@ def construct_tool_response_chat_object(tool_call_id, response, chat_history):
         A list of message objects for the OpenAI API of the form [{"role": role, "content": content}, ...]
 
     """
+    print("\n\n\n\n", response, "\n\n\n")
+    exit()
     tool_response_object = {
         "role": "tool",
         "tool_call_id": tool_call_id,
         "content": json.dumps(response),
     }
+
     messages = chat_history
     messages.append(tool_response_object)
 

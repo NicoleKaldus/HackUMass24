@@ -10,7 +10,10 @@
                     "properties": {
                         "keywords": {
                             "type": "array",
-                            "description": "A list of keywords to search for in the database."
+                            "description": "A list of keywords",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "required": ["keywords"]
