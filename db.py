@@ -27,7 +27,7 @@ except Exception as e:
 
 
 db = client['hackathon_db']
-collection = db['goose_data']
+collection = db['sam_data']
 
 
 """ with open('output.json', 'r') as file:
@@ -47,6 +47,12 @@ print("Data inserted successfully") """
 }
 
 collection.insert_one(scraped_data) """
+
+
+""" with open('website_content.json', 'r') as file:
+    sam_data = json.load(file)
+collection.insert_many(sam_data)
+print("Sam data inserted successfully") """
 
 # Query data (e.g., retrieve all records)
 documents = collection.find()
