@@ -12,7 +12,7 @@ from openai import OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # tools = []
-MAX_FUNCTION_CALL_ATTEMPTS = 5
+MAX_FUNCTION_CALL_ATTEMPTS = 1
 
 
 # with open("chatbot_tools.json") as f:
@@ -107,8 +107,8 @@ def construct_tool_response_chat_object(tool_call_id, response, chat_history):
         A list of message objects for the OpenAI API of the form [{"role": role, "content": content}, ...]
 
     """
-    # print("\n\n\n\n", response, "\n\n\n")
-    exit()
+    print("\n\n\n\n", response, "\n\n\n")
+    print(type(response))
     tool_response_object = {
         "role": "tool",
         "tool_call_id": tool_call_id,
@@ -142,7 +142,6 @@ def attempt_tool_calls(completion, max_attempts, chat_history):
         and attempts < max_attempts
         and completion.choices[0].message.tool_calls is not None
     ):
-        print(attempts)
         # print("completion", completion.choices[0].message)
         tool_call = completion.choices[0].message.tool_calls[0]  # get the tool call
         function_name = tool_call.function.name  # get the name of the function to call
@@ -154,16 +153,17 @@ def attempt_tool_calls(completion, max_attempts, chat_history):
         chat_history.append(
             completion.choices[0].message
         )  # append the tool call to the chat history
-
+        # print("we get here")
         new_message_list = construct_tool_response_chat_object(
             tool_call.id, result, chat_history
         )  # construct the message object for the tool response
-        print("new_message_list", new_message_list)
+        # print("we get here")
+        # print("new_message_list", new_message_list)
         completion = client.chat.completions.create(
             model="gpt-4o-mini", messages=new_message_list
         )
         attempts += 1
-    print(completion)
+    # print(completion)
     return completion, chat_history
 
 
@@ -265,6 +265,8 @@ def handle_function_calls(function_name, parameters):
                     if "_id" in post:
                         del post["_id"]
             # print(*key_post_pairs.items(), sep="\n")
+            with open("key_post_pairs.json", "w") as f:
+                json.dump(key_post_pairs, f, indent=4)
             return key_post_pairs
         case "ask_sam_by_keywords":
             key_post_pairs = get_by_keywords.ask_sam_by_keywords(parameters["keywords"])

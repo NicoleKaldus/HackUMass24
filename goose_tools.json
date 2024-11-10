@@ -10,7 +10,7 @@
                     "properties": {
                         "keywords": {
                             "type": "array",
-                            "description": "A list of keywords",
+                            "description": "A list of one-word keywords",
                             "items": {
                                 "type": "string"
                             }
