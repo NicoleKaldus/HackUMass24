@@ -1,37 +1,70 @@
 <script>
-    import './styles.css';
-	import { onMount, afterUpdate } from 'svelte';
+    import "./styles.css";
+    import { onMount, afterUpdate } from "svelte";
 
     let showSidebar = false;
 
     let message = ""; // User input
     let messages = []; // All messages in the chat
     let chatBox; // Chatting scroll area
-	let input; // User input text area
+    let input; // User input text area
 
-    // Simulated AI response function
-    function getAiResponse(userMessage) {
-        return `AI response to: ${userMessage}`;
+    /**
+     * Gets AI response to user query in form:
+     *  { role: "system", content: system_message }
+     *
+     * If it's the user's first query, initializes with AI route "/init", else continues
+     * conversation with "/query".
+     * - "/init": takes in query
+     * - "/query": takes in query and chat history (user and ai)
+     * @param query user text input
+     */
+    async function getAiResponse(query) {
+        const routes = ["/init", "/query"];
+        const payload = { input: query };
+        // account for user msg being first element
+        const isFirstQuery = messages.length < 2;
+        if (!isFirstQuery) payload.history = messages;
+        const route = isFirstQuery ? routes[0] : routes[1];
+        console.log(isFirstQuery, query, route);
+        console.log(payload);
+        return fetch(route, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(res => {
+                console.log("res:", res);
+                const resJson = res.json();
+                console.log("res json:", resJson);
+                return resJson;
+            })
+            .then(data => {
+                // update message history with user then ai response
+                messages = data.chat_history;
+                // return ai response
+                return data.content;
+            })
+            .catch(e => {
+                console.error(e);
+                return "Failed to get AI response";
+            });
     }
 
     // Send message when Enter is pressed or button is clicked
-    function sendMessage() {
+    async function sendMessage() {
+        // dont send empty input
         if (message.trim() !== "") {
             // Add the user message
-            messages = [...messages, { text: message, sender: "user" }];
+            messages = [...messages, { role: "user", content: message }];
+            // Simulate AI response after a short delay
+            messages = [...messages, await getAiResponse(message)];
             // Clear the input field
             message = "";
 
-            // Simulate AI response after a short delay
-            messages = [
-                ...messages,
-                {
-                    text: getAiResponse(messages[messages.length - 1].text),
-                    sender: "ai",
-                },
-            ];
-
-			input.focus();
+            input.focus();
         }
     }
 
@@ -66,7 +99,7 @@
         </button>
         {#if showSidebar}
             <div class="faqContent">
-				<p>FAQ</p>
+                <p>FAQ</p>
                 <button class="faqBtn" id="b0" on:click={() => (message = "sample faq content 0")}>
                     mfw i am content0
                 </button>
@@ -89,16 +122,17 @@
     <div class="chat-container">
         <!-- Chat Messages -->
         <div class="chat-box" bind:this={chatBox}>
-            {#each messages as { text, sender }}
-                <div class="message {sender}">
-                    <div class="bubble">{text}</div>
+            {#each messages as { content, role }}
+                <div class="message {role}">
+                    <div class="bubble">{content}</div>
                 </div>
             {/each}
         </div>
 
         <!-- Input Box and Send Button -->
         <div class="input-container">
-            <input bind:this={input}
+            <input
+                bind:this={input}
                 type="text"
                 bind:value={message}
                 placeholder="Type a message..."
