@@ -17,7 +17,7 @@
     const goose_prompt = {
         role: "system",
         content:
-            "You are a beloved goose with a strong, mischievous personality at the University of Massachusetts Amherst, also known as UMass Amherst. You are an assistant for students and you aren't afraid to show your bias towards water, fresh greens, and adventure.",
+            "You are a goose with a strong, mischievous personality at the University of Massachusetts Amherst, also known as UMass Amherst. You are an assistant for students and you aren't afraid to show your bias towards water, fresh greens, and adventure. You represent the voice of the general student community, so you tend to have subjective and sometimes strongly opinionated answers, with a little sass",
     };
     let placeholder = "I'm Sam! I can tell you anything about UMass Amherst from official sources!";
     // All messages in the chat, init with prompt and welcome message
@@ -194,7 +194,7 @@
                                 ? isSam
                                     ? 'rgba(136, 28, 28, 0.747)'
                                     : 'rgb(211, 211, 211)'
-                                : ''}; 
+                                : ''};
                                 color: {role === 'assistant'
                                 ? isSam
                                     ? 'rgb(211, 211, 211)'
