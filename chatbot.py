@@ -251,7 +251,7 @@ def handle_function_calls(function_name, parameters):
         { "response": response, ... }
         Ex. { "location": "New York, NY", "temperature": "72°F" }
     """
-    # print(parameters)
+    print(parameters)
     # print(parameters["keywords"])
     # print(parameters.keywords)
     match function_name:
@@ -265,8 +265,8 @@ def handle_function_calls(function_name, parameters):
                     if "_id" in post:
                         del post["_id"]
             # print(*key_post_pairs.items(), sep="\n")
-            with open("key_post_pairs.json", "w") as f:
-                json.dump(key_post_pairs, f, indent=4)
+            # with open("key_post_pairs.json", "w") as f:
+            #     json.dump(key_post_pairs, f, indent=4)
             return key_post_pairs
         case "ask_sam_by_keywords":
             key_post_pairs = get_by_keywords.ask_sam_by_keywords(parameters["keywords"])
@@ -279,6 +279,23 @@ def handle_function_calls(function_name, parameters):
             raise ValueError(f"Function {function_name} not recognized")
     return None
 
+def create_text_embedding(message_to_embed):
+    """
+    Create a text embedding for a given message
+
+    Args:
+        message_to_embed (str): The message to embed
+
+    Returns:
+        An array of floats representing the text embedding
+    """
+    # Remove non-ASCII characters from the message
+    cleaned_message = message_to_embed.encode("ascii", "ignore").decode("ascii")
+    
+    # Create the text embedding using the OpenAI API
+    embedding = client.embeddings.create(input=cleaned_message, model="text-embedding-3-small")
+    
+    return embedding["data"][0]["embedding"]
 
 def example_function():
     return "Hello, World!"
