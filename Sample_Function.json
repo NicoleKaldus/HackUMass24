@@ -1,0 +1,28 @@
+{
+    "type": "function",
+    "function": {
+        "name": "function_name",
+        "description": "<description of what the function does>. <suggestions on when to call the function>",
+        "parameters": {
+            "type": "<input type> e.g. object, integer, string. Need to do 'properties' if object, 'items' if array. Descriptions are optional",
+            "properties": {
+                "first_parameter_name": {
+                    "type": "<input type> e.g. object, integer, string",
+                    "description": "<description of the input parameter> e.g 'temperature in celsius'"
+                },
+                "second_parameter_name": {
+                    "type": "string", 
+                    "enum": ["celsius", "fahrenheit"]
+                },
+                "third_parameter_name": {
+                    "type": "array",
+                    "description": "<description of the input parameter> e.g 'list of temperatures in celsius'",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["list of required parameters. If none, leave empty or don't include this key"]
+        }
+    }
+}

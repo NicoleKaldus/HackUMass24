@@ -1,0 +1,24 @@
+{
+    "tools": [
+        {
+            "type": "function",
+            "function": {
+                "name": "ask_sam_by_keywords",
+                "description": "Searches a database for documents related to specific keywords. Use when user is asking for information about UMass Amherst",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "keywords": {
+                            "type": "array",
+                            "description": "A list of one-word keywords",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": ["keywords"]
+                }
+            }
+        }
+    ]
+}
