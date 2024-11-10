@@ -92,6 +92,8 @@
 </script>
 
 <main>
+    <button class="titleBtn" on:click={toggleTitle}>{isSam ? "Sam.ai" : "Goose.ai"}</button>
+
     <div class="faqContainer">
         <button class="menuBtn" on:click={() => (showSidebar = !showSidebar)}>
             {#if showSidebar}
@@ -144,7 +146,10 @@
     </div>
 
     <div class="desc-container">
-        <button class="titleBtn" on:click={toggleTitle}>{isSam ? "Sam.ai" : "Goose.ai"}</button>
+        <div class = "account-container">
+            <button class="loginBtn">Log in</button>
+            <button class="signupBtn">Sign up</button>
+        </div>
         {#if showInfo}
             <div class="info bottom">
                 <div>

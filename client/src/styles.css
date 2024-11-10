@@ -179,16 +179,50 @@ input {
     padding-left: 0;
 }
 
+.account-container {
+    background: white;
+    margin-top: 1.25em;
+    margin-right: 1.75em;
+    margin-bottom: 0.75em;
+}
+
+.loginBtn {
+    padding: 7.5px 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: black;
+    color: white;
+    border:1px solid gray;
+}
+
+.loginBtn:active {
+    background-color: rgb(61, 61, 61) !important; 
+}
+
+.signupBtn {
+    padding: 7.5px 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: white;
+    color: black;
+    border:1px solid gray;
+}
+
 .titleBtn {
+    position: absolute;
     background-color: white;
     color: rgb(136,28,28);
-    position: relative;
     width: 5em;
     height: 2em;
+    top: 0;
+    left: 45vw;
     font-size: 2em;
     text-justify: center;
     border: none;
-    margin-right: 1em;
+}
+
+.titleBtn:hover {
+    text-shadow: 0px 0.5px gray;
 }
 
 .titleBtn:active {
