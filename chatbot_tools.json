@@ -1,0 +1,16 @@
+{
+    "tools": [
+        {
+            "type": "function",
+            "function": {
+                "name": "example_function",
+                "description": "Always call this",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            }
+        }
+    ]
+}
