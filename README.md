@@ -21,6 +21,7 @@ We used a range of powerful tools to bring this project to life:
 - **MongoDB**: Stores and manages chatbot data, ensuring smooth retrieval of relevant information.
 - **Terraform**: Manages and automates our cloud infrastructure.
 - **AWS**: Hosts our application and provides scalability for a seamless user experience.
+- **Svelte**: Renders our frontend for a fast and responsive user experience.
 
 ## How It Works
 
