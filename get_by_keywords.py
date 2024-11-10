@@ -88,6 +88,60 @@ def ask_sam_by_keywords(keywords):
 
     return ret
 
+def search_database_by_embed(text_to_search_by, client, top_k=5):
+    """
+        Search the database for the most relevant text embeddings
+    
+        Args:
+            text_to_search_by (str): The text to search by
+            top_k (int): The number of results to return
+
+        Returns:
+            A list of the most relevant results
+    """
+    print("Searching by embedding for: ", text_to_search_by)
+    query_embedding = create_text_embedding(text_to_search_by,client)
+
+    pipeline = [
+        {
+            "$search": {
+                "knnBeta": {
+                    "vector": query_embedding,
+                    "path": "embedding",
+                    "k": top_k
+                }
+            }
+        },
+        {
+            "$project": {
+                "text": 1,
+                "score": {"$meta": "searchScore"}
+            }
+        }
+    ]
+
+    results = list(db["goose_data"].aggregate(pipeline))
+    
+    return results
+
+def create_text_embedding(message_to_embed, client=None):
+    """
+    Create a text embedding for a given message
+
+    Args:
+        message_to_embed (str): The message to embed
+
+    Returns:
+        An array of floats representing the text embedding
+    """
+    # Remove non-ASCII characters from the message
+    cleaned_message = message_to_embed.encode("ascii", "ignore").decode("ascii")
+    
+    # Create the text embedding using the OpenAI API
+    embedding = client.embeddings.create(input=cleaned_message, model="text-embedding-3-small")
+    
+    return embedding.data[0].embedding
+
 
 # if __name__ == "__main__":
     # goose_posts = ask_goose_by_keywords(["painting", "campus"])

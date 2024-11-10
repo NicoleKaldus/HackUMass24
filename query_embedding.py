@@ -22,12 +22,16 @@ client = MongoClient(uri)
 db = client["hackathon_db"]
 collection = db["goose2"]
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+from openai import OpenAI
+
+AIclient = OpenAI(api_key=OPENAI_API_KEY)
+
 def generate_query_embedding(query):
-    response = openai.Embedding.create(
-        input=query,
-        model="text-embedding-3-small"
-    )
-    return response['data'][0]['embedding']
+
+    response = AIclient.embeddings.create(input=query, model="text-embedding-3-small")
+    print(response)
+    return response.data[0].embedding
 
 
 # Example usage
@@ -54,6 +58,7 @@ def search_most_relevant_answers(query_embedding, top_k=5):
         }
     ]
     results = list(collection.aggregate(pipeline))
+    print(results)
     return results
 
 # Execute search

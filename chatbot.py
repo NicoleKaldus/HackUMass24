@@ -251,7 +251,7 @@ def handle_function_calls(function_name, parameters):
         { "response": response, ... }
         Ex. { "location": "New York, NY", "temperature": "72°F" }
     """
-    print(parameters)
+    # print(parameters)
     # print(parameters["keywords"])
     # print(parameters.keywords)
     match function_name:
@@ -259,15 +259,17 @@ def handle_function_calls(function_name, parameters):
             return {"function_result": example_function()}
         # Add more cases here for other functions
         case "ask_goose_by_keywords":
-            key_post_pairs = get_by_keywords.ask_goose_by_keywords(parameters["keywords"])
-            for key in key_post_pairs:
-                for post in key_post_pairs[key]:
-                    if "_id" in post:
-                        del post["_id"]
+            # key_post_pairs = get_by_keywords.ask_goose_by_keywords(parameters["keywords"])
+            # for key in key_post_pairs:
+            #     for post in key_post_pairs[key]:
+            #         if "_id" in post:
+            #             del post["_id"]
             # print(*key_post_pairs.items(), sep="\n")
             # with open("key_post_pairs.json", "w") as f:
             #     json.dump(key_post_pairs, f, indent=4)
-            return key_post_pairs
+            r = get_by_keywords.search_database_by_embed(parameters["keywords"],client)
+            print(r)
+            return {"relevant_posts": r}
         case "ask_sam_by_keywords":
             key_post_pairs = get_by_keywords.ask_sam_by_keywords(parameters["keywords"])
             for key in key_post_pairs:
@@ -295,7 +297,8 @@ def create_text_embedding(message_to_embed):
     # Create the text embedding using the OpenAI API
     embedding = client.embeddings.create(input=cleaned_message, model="text-embedding-3-small")
     
-    return embedding["data"][0]["embedding"]
+    return embedding.data[0].embedding
+
 
 def example_function():
     return "Hello, World!"
