@@ -24,8 +24,7 @@ main {
     align-items: center;
     margin: auto;
     width: 15vw;
-    height: 100vh;
-    column-gap: 1px;
+    height: 100%;
 }
 
 .faqHeader {
@@ -136,8 +135,8 @@ main {
 }
 
 .message.ai .bubble {
-    background-color: #f8f8f8;
-    color: #333;
+    background-color: rgba(136, 28, 28, 0.747);
+    color: rgb(211, 211, 211);
     align-self: flex-start;
 }
 
@@ -182,7 +181,7 @@ input {
 
 .titleBtn {
     background-color: white;
-    color: black;
+    color: rgb(136,28,28);
     position: relative;
     width: 5em;
     height: 2em;
@@ -200,8 +199,10 @@ input {
     background-color: white;
     position: fixed;
     border: none;
-    bottom: 1em;
-    right: 3.1em;
+    margin: none;
+    padding: none;
+    bottom: 0.8em;
+    right: 3.5em;
 }
 
 .infoBtn:active {
@@ -219,13 +220,13 @@ div.info {
 	line-height: 130%;
 	font-size: 13px;
     width: 70%;
-    height: 54vh;
+    height: 55.5vh;
     word-wrap: normal;
     justify-content: space-between;
-    font-size: 1.1em;
+    font-size: 1em;
     padding: 1em;
-    padding-top: 8vh;
-    padding-bottom: 8vh;
+    padding-top: 4vh;
+    padding-bottom: 11vh;
 }
 
 div.info.bottom:after {
@@ -242,7 +243,7 @@ div.info.bottom:after {
 
 div.info.bottom:after {
 	display: block;
-	margin: 60.3vh 0 0 6em;
+	margin: 65vh 0 0 6.3em;
 	-moz-transform: rotate(-135deg);
 	-ms-transform: rotate(-135deg);
 	-o-transform: rotate(-135deg);
