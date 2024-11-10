@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 import chatbot
+import json
 
 app = Flask(__name__)
 # CORS(app)
@@ -16,6 +17,14 @@ def base():
 def home(path):
     return send_from_directory("client/public", path)
 
+# 
+tools = []
+with open("goose_tools.json") as f:
+    # t is a json containing an array of tools
+    # each tool is a json object with a function
+    t = json.load(f)
+    tools = t["tools"]
+
 
 # init openai chatgpt-4o-mini
 @app.route("/init", methods=["POST"])
@@ -25,7 +34,7 @@ def init_chatgpt():
     user_message = data.get("input", "")
     # print(data, user_message)
     # TODO (for backend): populate with functions, see chatbot.py
-    tools = None
+    # tools = None
     res = chatbot.start_chat(prompt, user_message, tools)
     # can't JSON serialize this, so recreate it manually
     return jsonify_chatbot_msg(res)
@@ -38,7 +47,7 @@ def query():
     user_message = data.get("input", "")
     chat_history = data.get("history", [])
     # TODO (for backend): populate with functions, see chatbot.py
-    tools = None
+    # tools = None
     res = chatbot.continue_chat(user_message, chat_history, tools, False)
     return jsonify_chatbot_msg(res)
 
