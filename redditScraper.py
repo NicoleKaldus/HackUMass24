@@ -1,10 +1,9 @@
 import json
 import praw
-import pandas as pd
 import re
 import pprint
 
-POST_COUNT = 100 #number of posts to extract
+POST_COUNT = 2000 #number of posts to extract
 
 with open("client_secret.json") as secret_file:
   secret = json.load(secret_file)
@@ -24,24 +23,36 @@ def clean_text(text):
 
 
 def comment_tree(comment):
-  pprint.pprint(vars(comment))
+  # pprint.pprint(vars(comment))
   tree = {"user": "",
-          "text": comment.body,
+          "text": "",
           "replies" : []}
-  if comment.author:
-    tree["user"] = comment.author.name
-  else:
-    tree["user"] = "[deleted]"
+  try:
+    if len(comment.body) > 20:
+      tree["text"] = comment.body
+    if comment.author:
+      tree["user"] = comment.author.name
+    else:
+      tree["user"] = "[deleted]"
+  except Exception as e:
+    print(e)
+
   for reply in comment.replies:
     tree["replies"].append(comment_tree(reply))
   return tree
 
 
 def create_submission_tree(submission):
-  tree = {"user": submission.author.name,
-          "title":submission.title,
-          "text": submission.selftext,
+  tree = {"user": "",
+          "title": submission.title,
+          "text": "",
           "replies" : []}
+  try:
+    tree["user"] = submission.author.name
+  except:
+    print("author name error")
+  if len(submission.selftext) > 20:
+    tree["text"] = submission.selftext
   #pprint.pprint(vars(submission))
   submission.comment_sort = "hot"
   for comment in submission.comments:
@@ -49,7 +60,10 @@ def create_submission_tree(submission):
   return tree
 
 submission_list = []
-for submission in subreddit.hot(limit = POST_COUNT):
+count = 1
+for submission in subreddit.new(limit = POST_COUNT):
+  print(count)
+  count += 1
   tree = create_submission_tree(submission)
   submission_list.append(tree)
 
