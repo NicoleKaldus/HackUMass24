@@ -1,19 +1,18 @@
 main {
     text-align: center;
-    padding: 1em;
-    max-width: 240px;
     margin: 0 auto;
 }
 
 .faqContainer {
     position: fixed;
-    top: 0;
-    left: 0;
     background: rgb(136,28,28);
     color: white;
     width: fit-content;
     height: 100%;
-    padding: 3px;
+    top: 0;
+    left: 0;
+    padding-top: 0;
+    padding-left: 0;
 }
 
 .faqContent {
@@ -29,22 +28,35 @@ main {
     column-gap: 1px;
 }
 
+.faqHeader {
+    width: 100%;
+    height: 3em;
+    position: relative;
+    background: black;
+    color:rgb(211, 211, 211);
+    flex-direction: row;
+    padding: 0;
+    padding-bottom: 0.5em;
+    margin: 0;
+    margin-bottom: 0.5em;
+}
+
 .menuBtn {
     position: relative;
-    margin-top: 0.75em;
     float: right;
-    background: rgb(136,28,28);
+    background: black;
     border: none;
     outline: none;
+    height: 3.5em
 }
 
 .menuBtn:active {
-    background: inherit !important;
+    background: black !important;
 }
 
 .icon {
-    width: 1.5em;
-    height: 1.5em;
+    width: 2em;
+    height: 2em;
 }
 
 .faqBtn {
@@ -53,9 +65,10 @@ main {
     color: rgb(211, 211, 211);
     border: none;
     margin: none;
-    outline: none;
+    padding-left: 2.5em;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
 }
 
 .faqBtn:active {
@@ -77,10 +90,10 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    height: 88vh;
+    height: 83vh;
     max-width: 60vw;
     margin: 0 auto;
-    border: 1px solid #ddd;
+    margin-top: 3.5em;
     border-radius: 10px;
     padding: 10px;
 }
@@ -154,4 +167,92 @@ input {
 
 .inputBtn:hover {
     background-color: #0056b3;
+}
+
+.desc-container {
+    position: fixed;
+    background: white;
+    width: 16vw;
+    height: 100%;
+    top: 0;
+    right: 0;
+    padding-top: 0;
+    padding-left: 0;
+}
+
+.titleBtn {
+    background-color: white;
+    color: black;
+    position: relative;
+    width: 5em;
+    height: 2em;
+    font-size: 2em;
+    text-justify: center;
+    border: none;
+    margin-right: 1em;
+}
+
+.titleBtn:active {
+    background: inherit !important;
+}
+
+.infoBtn {
+    background-color: white;
+    position: fixed;
+    border: none;
+    bottom: 1em;
+    right: 3.1em;
+}
+
+.infoBtn:active {
+    background: inherit !important;
+}
+
+div.info {
+	background: white;
+	display: flex;
+    flex-direction: column;
+	border: 1px solid #aaa;
+	border-radius: 10px;
+	color: black;
+	box-shadow: 2px 2px 8px #ddd;
+	line-height: 130%;
+	font-size: 13px;
+    width: 70%;
+    height: 54vh;
+    word-wrap: normal;
+    justify-content: space-between;
+    font-size: 1.1em;
+    padding: 1em;
+    padding-top: 8vh;
+    padding-bottom: 8vh;
+}
+
+div.info.bottom:after {
+	content: "";
+	position: absolute;
+	width: 1em;
+	height: 1em;
+	border-left: 1px solid #aaa;
+	border-left-color: inherit;
+	border-top: 1px solid #aaa;
+	border-top-color: inherit;
+	background-color: inherit;
+}
+
+div.info.bottom:after {
+	display: block;
+	margin: 60.3vh 0 0 6em;
+	-moz-transform: rotate(-135deg);
+	-ms-transform: rotate(-135deg);
+	-o-transform: rotate(-135deg);
+	-webkit-transform: rotate(-135deg);
+}
+
+h3 {
+    margin-bottom: 0;
+}
+
+.infoinfo {
+    margin-top: 0.5em;
 }

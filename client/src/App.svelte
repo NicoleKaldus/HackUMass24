@@ -1,13 +1,27 @@
 <script>
     import './styles.css';
-	import { onMount, afterUpdate } from 'svelte';
+    import { onMount, afterUpdate } from 'svelte';
 
-    let showSidebar = false;
-
+    let showSidebar = true;
+	let showInfo = true;
     let message = ""; // User input
     let messages = []; // All messages in the chat
     let chatBox; // Chatting scroll area
-	let input; // User input text area
+    let input; // User input text area
+
+    // FAQ array with key-value pairs
+    const faqItems = [
+        { title: "Majors & Minors", content: "Majors & Minors content" },
+        { title: "Gen-Ed Requirements", content: "Gen-Ed Requirements content" },
+        { title: "Living", content: "Living content" },
+        { title: "Central", content: "Central content" },
+        { title: "Honors College (CHCRC)", content: "Honors College content" },
+        { title: "Northeast (NE)", content: "Northeast content" },
+        { title: "Orchard Hill (OHill)", content: "Orchard Hill content" },
+        { title: "Southwest (SW)", content: "Southwest content" },
+        { title: "Sylvan", content: "Sylvan content" },
+        { title: "North Apartments", content: "North Apartments content" }
+    ];
 
     // Simulated AI response function
     function getAiResponse(userMessage) {
@@ -31,7 +45,7 @@
                 },
             ];
 
-			input.focus();
+            input.focus();
         }
     }
 
@@ -53,6 +67,15 @@
             sendMessage();
         }
     }
+
+	function toggleTitle() {
+		if (this.innerText === "Sam.ai"){
+			this.innerText = "Goose.ai";
+		}
+		else {
+			this.innerText = "Sam.ai"
+		}
+	}
 </script>
 
 <main>
@@ -64,24 +87,21 @@
                 <img src="./images/chevronRight.png" alt="x" class="icon" />
             {/if}
         </button>
+
         {#if showSidebar}
             <div class="faqContent">
-				<p>FAQ</p>
-                <button class="faqBtn" id="b0" on:click={() => (message = "sample faq content 0")}>
-                    mfw i am content0
-                </button>
-                <button class="faqBtn" id="b1" on:click={() => (message = "sample faq content 1")}>
-                    mfw i am content1
-                </button>
-                <button class="faqBtn" id="b2" on:click={() => (message = "sample faq content 2")}>
-                    mfw i am content2
-                </button>
-                <button class="faqBtn" id="b3" on:click={() => (message = "sample faq content 3")}>
-                    mfw i am content3
-                </button>
-                <button class="faqBtn" id="b4" on:click={() => (message = "sample faq content 4")}>
-                    mfw i am content4
-                </button>
+                <div class = "faqHeader">
+					<p>FAQ</p>
+				</div>
+                <!-- Loop through faqItems and create a button for each -->
+                {#each faqItems as { title, content }}
+                    <button
+                        class="faqBtn"
+                        on:click={() => (message = content)}
+                    >
+                        {title}
+                    </button>
+                {/each}
             </div>
         {/if}
     </div>
@@ -98,7 +118,8 @@
 
         <!-- Input Box and Send Button -->
         <div class="input-container">
-            <input bind:this={input}
+            <input
+                bind:this={input}
                 type="text"
                 bind:value={message}
                 placeholder="Type a message..."
@@ -107,7 +128,27 @@
             <button class="inputBtn" on:click={sendMessage}>Send</button>
         </div>
     </div>
+
+	<div class="desc-container">
+		<button class="titleBtn" on:click={toggleTitle}>Sam.ai</button>
+		{#if showInfo}
+			<div class="info bottom">
+				<div>
+					<h3>Sam</h3>
+					<p class = "infoinfo">will tell you what's on official sources.</p>
+				</div>
+				<div>
+					<h3>Goose</h3>
+					<p class = "infoinfo">will tell you what the community says.</p>
+				</div>
+			</div>
+		{/if}
+		<button class="infoBtn" on:click={() => (showInfo = !showInfo)}>
+			<img src="./images/info.png" alt="info" class="icon" />
+        </button>
+	</div>
 </main>
+
 
 <!-- <style>
 	@import './styles.css';
