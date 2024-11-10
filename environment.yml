@@ -1,0 +1,11 @@
+name: hackumass2024
+channels:
+  - defaults
+dependencies:
+  - python=3.10.15
+  - nodejs
+  - flask
+  - flask_cors
+  - openai
+  - python-dotenv
+prefix: /opt/anaconda3/envs/hackumass2024
