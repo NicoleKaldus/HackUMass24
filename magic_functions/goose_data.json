@@ -1,0 +1,11 @@
+{
+    "type": "function",
+    "function": {
+        "name": "ask_goose_by_keywords",
+        "description": "This function takes in an array of keywords relevant to the user's query and searches our mongodb collections for scraped reddit posts that have those key words in the original poster's post. This function should be called when information about about UMass is needed, especially regarding student opinions.",
+        "parameters": {
+            "type": "array of strings",
+            "required": ["an array of strings representing the keywords of the query"]
+        }
+    }
+}
