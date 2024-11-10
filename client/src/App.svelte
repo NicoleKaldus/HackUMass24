@@ -4,30 +4,40 @@
 
     let showSidebar = false;
 
+    let bot = "sam";
     let message = ""; // User input
     let messages = []; // All messages in the chat
+    const prompt = {
+        user: "system",
+        content:
+            "You are a helpful assistant for students at the University of Massachusetts Amherst.",
+    };
     let chatBox; // Chatting scroll area
     let input; // User input text area
 
     /**
      * Gets AI response to user query in form:
-     *  { role: "system", content: system_message }
+     *  { role: "assistant", content: system_message }
      *
      * If it's the user's first query, initializes with AI route "/init", else continues
      * conversation with "/query".
      * - "/init": takes in query
      * - "/query": takes in query and chat history (user and ai)
      * @param query user text input
+     * @returns [data.chat_history, data.response]
      */
     async function getAiResponse(query) {
         const routes = ["/init", "/query"];
         const payload = { input: query };
         // account for user msg being first element
         const isFirstQuery = messages.length < 2;
+        // add chat history to following queries
         if (!isFirstQuery) payload.history = messages;
         const route = isFirstQuery ? routes[0] : routes[1];
-        console.log(isFirstQuery, query, route);
-        console.log(payload);
+        // console.log(isFirstQuery, query, route);
+        // console.log(payload);
+        console.log(1, messages);
+
         return fetch(route, {
             method: "POST",
             headers: {
@@ -36,20 +46,19 @@
             body: JSON.stringify(payload),
         })
             .then(res => {
-                console.log("res:", res);
+                // console.log("res:", res);
                 const resJson = res.json();
-                console.log("res json:", resJson);
+                // console.log("res json:", resJson);
                 return resJson;
             })
             .then(data => {
-                // update message history with user then ai response
-                messages = data.chat_history;
                 // return ai response
-                return data.content;
+                console.log(2, messages);
+                return [data.chat_history, data.content];
             })
             .catch(e => {
                 console.error(e);
-                return "Failed to get AI response";
+                return [data.chat_history, "Failed to get AI response"];
             });
     }
 
@@ -60,7 +69,11 @@
             // Add the user message
             messages = [...messages, { role: "user", content: message }];
             // Simulate AI response after a short delay
-            messages = [...messages, await getAiResponse(message)];
+            console.log(3, messages);
+            const [new_history, response] = await getAiResponse(message);
+            messages = new_history;
+            // messages.push(response);
+            console.log(4, messages);
             // Clear the input field
             message = "";
 
@@ -123,9 +136,11 @@
         <!-- Chat Messages -->
         <div class="chat-box" bind:this={chatBox}>
             {#each messages as { content, role }}
-                <div class="message {role}">
-                    <div class="bubble">{content}</div>
-                </div>
+                {#if role !== "system"}
+                    <div class="message {role}">
+                        <div class="bubble">{content}</div>
+                    </div>
+                {/if}
             {/each}
         </div>
 

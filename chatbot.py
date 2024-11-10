@@ -64,7 +64,8 @@ def construct_chat_object(system_message, user_message, chat_history=None):
             A chat object for the OpenAI API of the form [{"role": role, "content": content}, ...]
     '''
     messages = []
-    #print(system_message, user_message, chat_history)
+    print("OAEFHAEIUFHOAEIUFheioaufh")
+    print(system_message, user_message, chat_history, sep="\n")
 
     if isinstance(user_message, str) is False:
         raise ValueError("The user message must be a string")
@@ -177,7 +178,7 @@ def start_chat(system_message, user_message, tools=None):
     
     return toReturn
 
-def continue_chat(user_message, chat_history, tools=None):
+def continue_chat(user_message, chat_history, tools=None, add_user_msg=True):
     '''
         Continue a chat with the OpenAI API
 
@@ -205,7 +206,8 @@ def continue_chat(user_message, chat_history, tools=None):
             messages=chat_object
         )
     
-    chat_history.append(construct_message_object("user", user_message))
+    if add_user_msg:
+        chat_history.append(construct_message_object("user", user_message))
 
     completion, chat_history = attempt_tool_calls(completion, MAX_FUNCTION_CALL_ATTEMPTS, chat_history)
     chat_history.append(completion.choices[0].message)
