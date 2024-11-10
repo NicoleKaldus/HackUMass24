@@ -28,7 +28,7 @@ db = client["hackathon_db"]
 def ask_goose_by_keywords(keywords):
     # print(keywords)
     # keywords is a list of keywords that are relevant to the query
-    collection = db["goose_data"]
+    collection = db["goose2"]
     if (
         "text_text" not in collection.list_indexes()
     ):  # 'text_text' is the default name for a text index on the 'text' field
@@ -52,9 +52,13 @@ def ask_goose_by_keywords(keywords):
                 ret[k].append(content)
                 appended_posts.add(content["_id"])
             count += 1
+            if count == 10:
+                break
+        if count == 10:
+            break
 
         # print(count, " documents found for keyword ", k)
-
+    print(ret)
     return ret
 
 
@@ -83,6 +87,10 @@ def ask_sam_by_keywords(keywords):
                 ret[k].append(content)
                 appended_posts.add(content["_id"])
             count += 1
+            if count == 10:
+                break
+        if count == 10:
+            break
 
         # print(count, " documents found for keyword ", k)
 
