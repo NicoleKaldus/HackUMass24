@@ -1,4 +1,4 @@
-# UMass Amherst Student Guide Chatbots
+# Sam VS Goose - UMass Amherst Student Guide Chatbots
 
 Welcome to our UMass Amherst Student Guide Webapp! This project was developed to help UMass Amherst students, especially newcomers, navigate campus life with ease. We have two specialized chatbots, **Sam the Minuteman** and **The Campus Pond Goose**, each offering valuable insights into different aspects of college life at UMass Amherst.
 
